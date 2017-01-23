@@ -17,15 +17,19 @@
 */
 /**************************************************************************/
 
-#if ARDUINO >= 100
- #include "Arduino.h"
+#ifdef PARTICLE
+#include "Particle.h"
 #else
- #include "WProgram.h"
-#endif
+  #if ARDUINO >= 100
+   #include "Arduino.h"
+  #else
+   #include "WProgram.h"
+  #endif
 
-#include <Wire.h>
-#ifndef __AVR_ATtiny85__
-  #include <SPI.h>
+  #include <Wire.h>
+  #ifndef __AVR_ATtiny85__
+    #include <SPI.h>
+  #endif
 #endif
 #include <Adafruit_Sensor.h>
 
@@ -93,7 +97,7 @@ typedef enum
 /* Used with register 0x2A (LIS3DH_REG_CTRL_REG1) to set bandwidth */
 typedef enum
 {
-  LIS3DH_DATARATE_400_HZ     = 0b0111, //  400Hz 
+  LIS3DH_DATARATE_400_HZ     = 0b0111, //  400Hz
   LIS3DH_DATARATE_200_HZ     = 0b0110, //  200Hz
   LIS3DH_DATARATE_100_HZ     = 0b0101, //  100Hz
   LIS3DH_DATARATE_50_HZ      = 0b0100, //   50Hz
@@ -111,7 +115,7 @@ class Adafruit_LIS3DH : public Adafruit_Sensor {
   Adafruit_LIS3DH(void);
   Adafruit_LIS3DH(int8_t cspin);
   Adafruit_LIS3DH(int8_t cspin, int8_t mosipin, int8_t misopin, int8_t sckpin);
-  
+
   bool       begin(uint8_t addr = LIS3DH_DEFAULT_ADDRESS);
 
   void read();
@@ -135,7 +139,7 @@ class Adafruit_LIS3DH : public Adafruit_Sensor {
   float x_g, y_g, z_g;
 
  private:
-  
+
   uint8_t readRegister8(uint8_t reg);
   void writeRegister8(uint8_t reg, uint8_t value);
   uint8_t spixfer(uint8_t x = 0xFF);

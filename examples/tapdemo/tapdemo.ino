@@ -1,7 +1,9 @@
 // Basic demo for tap/doubletap readings from Adafruit LIS3DH
 
+#ifndef PARTICLE
 #include <Wire.h>
 #include <SPI.h>
+#endif
 #include <Adafruit_LIS3DH.h>
 #include <Adafruit_Sensor.h>
 
@@ -36,16 +38,16 @@ void setup(void) {
 
   Serial.begin(9600);
     Serial.println("Adafruit LIS3DH Tap Test!");
-  
+
   if (! lis.begin(0x18)) {   // change this to 0x19 for alternative i2c address
     Serial.println("Couldnt start");
     while (1);
   }
   Serial.println("LIS3DH found!");
-  
+
   lis.setRange(LIS3DH_RANGE_2_G);   // 2, 4, 8 or 16 G!
-  
-  Serial.print("Range = "); Serial.print(2 << lis.getRange());  
+
+  Serial.print("Range = "); Serial.print(2 << lis.getRange());
   Serial.println("G");
 
   // 0 = turn off click detection & interrupt
