@@ -143,7 +143,8 @@ class Adafruit_LIS3DH : public Adafruit_Sensor {
   uint8_t readRegister8(uint8_t reg);
   void writeRegister8(uint8_t reg, uint8_t value);
   uint8_t spixfer(uint8_t x = 0xFF);
-
+  void beginTransaction();
+  void endTransaction();
 
   int32_t _sensorID;
   int8_t  _i2caddr;

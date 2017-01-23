@@ -144,7 +144,8 @@ void Adafruit_LIS3DH::read(void) {
   #ifndef __AVR_ATtiny85__
   else {
     if (_sck == -1)
-      SPI.beginTransaction(SPISettings(500000, MSBFIRST, SPI_MODE0));
+      beginTransaction();
+
     digitalWrite(_cs, LOW);
     spixfer(LIS3DH_REG_OUT_X_L | 0x80 | 0x40); // read multiple, bit 7&6 high
 
@@ -154,7 +155,7 @@ void Adafruit_LIS3DH::read(void) {
 
     digitalWrite(_cs, HIGH);
     if (_sck == -1)
-      SPI.endTransaction();              // release the SPI bus
+    	endTransaction();
 
   }
   #endif
@@ -196,7 +197,8 @@ int16_t Adafruit_LIS3DH::readADC(uint8_t adc) {
   #ifndef __AVR_ATtiny85__
   else {
     if (_sck == -1)
-      SPI.beginTransaction(SPISettings(500000, MSBFIRST, SPI_MODE0));
+	  beginTransaction();
+
     digitalWrite(_cs, LOW);
     spixfer(reg | 0x80 | 0x40); // read multiple, bit 7&6 high
 
@@ -204,7 +206,7 @@ int16_t Adafruit_LIS3DH::readADC(uint8_t adc) {
 
     digitalWrite(_cs, HIGH);
     if (_sck == -1)
-      SPI.endTransaction();              // release the SPI bus
+    	endTransaction();
   }
   #endif
 
@@ -381,13 +383,14 @@ void Adafruit_LIS3DH::writeRegister8(uint8_t reg, uint8_t value) {
   #ifndef __AVR_ATtiny85__
   else {
     if (_sck == -1)
-      SPI.beginTransaction(SPISettings(500000, MSBFIRST, SPI_MODE0));
+	  beginTransaction();
+
     digitalWrite(_cs, LOW);
     spixfer(reg & ~0x80); // write, bit 7 low
     spixfer(value);
     digitalWrite(_cs, HIGH);
     if (_sck == -1)
-      SPI.endTransaction();              // release the SPI bus
+    	endTransaction();
   }
   #endif
 }
@@ -411,14 +414,34 @@ uint8_t Adafruit_LIS3DH::readRegister8(uint8_t reg) {
   #ifndef __AVR_ATtiny85__
   else {
     if (_sck == -1)
-      SPI.beginTransaction(SPISettings(500000, MSBFIRST, SPI_MODE0));
+	  beginTransaction();
+
     digitalWrite(_cs, LOW);
     spixfer(reg | 0x80); // read, bit 7 high
     value = spixfer(0);
     digitalWrite(_cs, HIGH);
     if (_sck == -1)
-      SPI.endTransaction();              // release the SPI bus
+    	endTransaction();
   }
   #endif
   return value;
+}
+
+
+void Adafruit_LIS3DH::beginTransaction() {
+#ifdef PARTICLE
+    SPI.setBitOrder(MSBFIRST);
+    SPI.setClockSpeed(500000);
+    SPI.setDataMode(SPI_MODE0);
+#else
+  SPI.beginTransaction(SPISettings(500000, MSBFIRST, SPI_MODE0));
+#endif
+}
+
+void Adafruit_LIS3DH::endTransaction() {
+#ifdef PARTICLE
+
+#else
+  SPI.endTransaction();
+#endif
 }
